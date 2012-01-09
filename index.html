@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <button id="add-dropdown-button">add dropdown</button>
+        <form>
+            <table id="rubric-table" />
+        </form>
+        <div id="edit-dialog" style="display: none">
+            <select id="edit-dialog-dropdown-select"></select>
+            <button>save</button>
+            <button>cancel</button>
+        </div>
+        <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script type="text/javascript" src="jsrender.js"></script>
+        <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js">
+            </script>
+
+        <script id="dropdownRowTemplate" type="text/x-jquery-tmpl">
+            <tr id="dropdown-{{=count}}">
+                <th>Dropdown</th>
+                <td>
+                    <input type="hidden" name="presentation-{{=count}}" value="DROPDOWN" />
+                    <input type="text" name="name-{{=count}}" size="20"
+                        placeholder="Name of rubric item"/>
+                </td>
+                <td>
+                    <input type="hidden" name="value-{{=count}}" required="required"
+                        placeholder="name:value pairs (e.g., bad:0, ok:5, good:7)"
+                        size="50" />
+                        <select id="dropdown-select-{{=count}}"></select>
+                    <button id="dropdown-edit-{{=count}}">edit dropdown</button>
+                </td>
+                <td>
+                    <input type="text" name="description-{{=count}}" size="50"
+                        placeholder="a longer description of this rubric item"/>
+                </td>
+            </tr>
+        </script>
+        <script type="text/javascript" src="dropdown-edit.js"></script>
+    </body>
+</html>
