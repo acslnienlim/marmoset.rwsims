@@ -2,12 +2,12 @@ var marmoset = marmoset || {};
 
 
 /**
- * @class Wraps a <select /> tag for displaying a dropdown rubric.
+ * @class Wraps a select tag for displaying a dropdown rubric.
  *
  * @author rwsims
  *
  * @constructor
- * @param {object} the select tag to wrap.
+ * @param {object} select the select tag to wrap.
  * @param {object} [hidden] the hidden input for storing the value string.
  */
 marmoset.DropdownWidget = function(select, hidden) {
@@ -16,6 +16,12 @@ marmoset.DropdownWidget = function(select, hidden) {
     this.valueMap = {};
 };
 
+/** 
+ * Return the values formatted for sending as a parameter.
+ *
+ * @return {string} The value string. Keys and values are separated by ':',
+ * pairs are separated by ','.
+ */
 marmoset.DropdownWidget.prototype.getValueString = function() {
     var pairs = [];
     $.each(this.valueMap, function(value, score) {
@@ -24,6 +30,9 @@ marmoset.DropdownWidget.prototype.getValueString = function() {
     return pairs.join(",");
 };
 
+/**
+ * Redraw the select tag, provinding an option tag for each key/value pair.
+ */
 marmoset.DropdownWidget.prototype.redraw = function() {
     this.$select.empty();
     var frag = document.createDocumentFragment();
@@ -39,12 +48,21 @@ marmoset.DropdownWidget.prototype.redraw = function() {
     }
 };
 
+/**
+ * Set a score for a value. If the value doesn't exist, it will be added,
+ * otherwise it will be overwritten. Also redraws the widget.
+ */
 marmoset.DropdownWidget.prototype.put = function(name, score) {
     this.valueMap[name] = score;
     this.redraw();
     this.$select.val(name);
 };
 
+/**
+ * Set the scores & values to be the same as the given map. Redraws the widget.
+ *
+ * @param {Map<String, String>} map of values to scores.
+ */
 marmoset.DropdownWidget.prototype.setValues = function(valueMap) {
     this.clear();
     var thisValueMap = this.valueMap;
@@ -54,11 +72,18 @@ marmoset.DropdownWidget.prototype.setValues = function(valueMap) {
     this.redraw();
 };
 
+/**
+ * Removes a value from the dropdown. Has no effect if the value does not exist
+ * in the map. Redraws the widget.
+ */
 marmoset.DropdownWidget.prototype.remove = function(name) {
     delete this.valueMap[name];
     this.redraw();
 };
 
+/**
+ * Removes all values from the map and redraws the widget.
+ */
 marmoset.DropdownWidget.prototype.clear = function() {
     this.valueMap = {};
     this.redraw();
@@ -128,13 +153,23 @@ marmoset.DropdownEditor.prototype._add = function() {
     this.valueInput.select();
 }
 
+/**
+ * Clear the inputs and close the dialog. Also disassociates the editor from the
+ * dropdown widget being edited.
+ */
 marmoset.DropdownEditor.prototype.clearAndClose = function() {
     this.dialog.dialog("close");
     this.widget.clear();
     this.valueInput.val('');
     this.scoreInput.val('');
+    delete this.currentWidget;
 };
 
+/**
+ * Edit a dropdown widget.
+ *
+ * @param {marmoset.DropdownWidget} the widget to edit.
+ */
 marmoset.DropdownEditor.prototype.edit = function(widget) {
     this.dialog.dialog("open");
     this.currentWidget = widget;
@@ -146,7 +181,6 @@ marmoset.DropdownEditor.prototype._save = function() {
         return;
     }
     this.currentWidget.setValues(this.widget.valueMap);
-    delete this.currentWidget;
 };
 
 
@@ -172,6 +206,14 @@ marmoset.RubricManager = function(rubricTableId, dropdownEditor) {
     };
 };
 
+/**
+ * Provide a prefix for use in making names & ids for elements in a template.
+ * The prefix is unique across all rubrics.
+ *
+ * @private
+ * @param {string} [name] Name to prefix.
+ *
+ */
 marmoset.RubricManager.prototype._prefix = function(name) {
     prefix = "rubric-" + this.rubricCount;
     if (name) {
@@ -180,8 +222,17 @@ marmoset.RubricManager.prototype._prefix = function(name) {
     return prefix;
 }
 
-/** Render a rubric template and add it to the table. Returns the jQuery object
- * that results.
+/** 
+ * Render a rubric template and add it to the table. Returns the jQuery object
+ * that results. Rubrics are rendered as a row in a table, and differ only in
+ * the widgets used to edit the rubric.
+ *
+ * @private
+ * @param {template} the rubric-specific (editing widgets) template to render
+ * @param {Map<String, String>} value map, populated with values specific to the
+ *                              rubric being added.
+ *
+ * @return {object} the jQuery object representing the rendered template.
  */
 marmoset.RubricManager.prototype._addRubric = function(template, values) {
     this.rubricCount += 1;
@@ -192,7 +243,6 @@ marmoset.RubricManager.prototype._addRubric = function(template, values) {
     return $(row).appendTo(this.table);
 };
 
-/** Add a dropdown rubric to the table managed by this instance. */
 marmoset.RubricManager.prototype._addDropdown = function(event) {
     this._addRubric(this.templates.dropdown, {
         presentation: "DROPDOWN",
@@ -234,6 +284,11 @@ marmoset.RubricManager.prototype.setAddDropdownButton = function(buttonId) {
     });
 };
 
+/**
+ * Set the button to add a numeric widget.
+ *
+ * @param {string} id of the button to use.
+ */
 marmoset.RubricManager.prototype.setAddNumericButton = function(buttonId) {
     var manager = this;
     $(buttonId).click(function(event) {
@@ -241,6 +296,11 @@ marmoset.RubricManager.prototype.setAddNumericButton = function(buttonId) {
     });
 };
 
+/**
+ * Set the button to add a checkbox widget.
+ *
+ * @param {string} id of the button to use.
+ */
 marmoset.RubricManager.prototype.setAddCheckboxButton = function(buttonId) {
     var manager = this;
     $(buttonId).click(function(event) {
