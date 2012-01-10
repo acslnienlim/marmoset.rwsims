@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="jquery-ui.css" type="text/stylesheet" />
     </head>
     <body>
         <button id="add-dropdown-button">add dropdown</button>
@@ -9,10 +10,17 @@
         </form>
         <div id="edit-dialog" style="display: none">
             <select id="edit-dialog-dropdown-select"></select>
-            <input type="text" id="edit-dialog-value-input" />
-            <input type="number" id="edit-dialog-score-input" />
-            <button>save</button>
-            <button>cancel</button>
+            <div>
+                <input type="text" id="edit-dialog-value-input" />
+                <input type="number" id="edit-dialog-score-input" min="-1000" max="1000" />
+            </div>
+            <div>
+                <span id="edit-dialog-controls">
+                    <button id="edit-dialog-add">add</button>
+                    <button id="edit-dialog-delete">delete</button>
+                    <button id="edit-dialog-clear-all">clear all</button>
+                </span>
+            </div>
         </div>
         <script type="text/javascript"
             src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -30,10 +38,8 @@
                         placeholder="Name of rubric item"/>
                 </td>
                 <td>
-                    <input type="hidden" name="value-{{=count}}" required="required"
-                        placeholder="name:value pairs (e.g., bad:0, ok:5, good:7)"
-                        size="50" />
-                        <select id="dropdown-select-{{=count}}"></select>
+                    <input type="hidden" name="value-{{=count}}" />
+                    <select id="dropdown-select-{{=count}}"></select>
                     <button>edit dropdown</button>
                 </td>
                 <td>
@@ -44,7 +50,8 @@
         </script>
         <script type="text/javascript" src="dropdown-edit.js"></script>
         <script type="text/javascript">
-            var manager = new RubricManager("#rubric-table", "#edit-dialog");
+            var dropdownEditor = new DropdownEditor("#edit-dialog");
+            var manager = new RubricManager("#rubric-table", dropdownEditor);
             manager.setAddDropdownButton("#add-dropdown-button");
         </script>
     </body>
