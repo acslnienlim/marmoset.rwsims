@@ -35,44 +35,39 @@
             <tr id="rubric-{{=count}}">
                 <th>{{=header}}</th>
                 <td>
-                    <input type="hidden" name="presentation-{{=count}}"
-                        value="{{=presentation}}" />
-                    <input type="text" name="name-{{=count}}" size="20"
-                        placeholder="Name of rubric item"/>
+                    <input type="hidden" name="{{=prefix}}-presentation" value="{{=presentation}}" />
+                    <input type="text" name="{{=prefix}}-name" size="20" placeholder="Name of rubric item"/>
                 </td>
                 <td>
                     {{=editWidgets!}}
                 </td>
                 <td>
-                    <input type="text" name="description-{{=count}}" size="50"
-                        placeholder="a longer description of this rubric item"/>
+                    <input type="text" name="{{=prefix}}-description" size="50" placeholder="a longer description of this rubric item"/>
                 </td>
             </tr>
         </script>
 
         <script id="dropdownTemplate" type="text/x-jquery-tmpl">
-                    <input type="hidden" name="value-{{=count}}" id="rubric-value-{{=count}}"/>
-            <select id="dropdown-select-{{=count}}"></select>
-            <button id="dropdown-edit-{{=count}}">edit dropdown</button>
+            <input type="hidden" name="{{=prefix}}-value" id="{{=prefix}}-hidden"/>
+            <select id="{{=prefix}}-select"></select>
+            <button id="{{=prefix}}-edit-button">edit dropdown</button>
         </script>
-
-
         <script id="numericTemplate" type="text/x-jquery-tmpl">
-            <label for="numeric-{{=count}}-min-input">min:</label>
-            <input type="text" name="rubric-{{=count}}-min" id="numeric-{{=count}}-min-input" placeholder="min"  size="4">
+            <label for="{{=prefix}}-min-input">min:</label>
+            <input type="text" name="{{=prefix}}-min" id="{{=prefix}}-min-input" placeholder="min"  size="4">
 
-            <label for="numeric-{{=count}}-max-input">max:</label>
-            <input type="text" name="rubric-{{=count}}-max" id="numeric-{{=count}}-max-input" placeholder="max"  size="4">
+            <label for="{{=prefix}}-max-input">max:</label>
+            <input type="text" name="{{=prefix}}-max" id="{{=prefix}}-max-input" placeholder="max"  size="4">
 
-            <label for="numeric-{{=count}}-default-input">default:</label>
-            <input type="text" name="rubric-{{=count}}-default" id="numeric-{{=count}}-default-input" placeholder="default"  size="4">
+            <label for="{{=prefix}}-default-input">default:</label>
+            <input type="text" name="{{=prefix}}-default" id="{{=prefix}}-default-input" placeholder="default"  size="4">
         </script>
         <script id="checkboxTemplate" type="text/x-jquery-tmpl">
             <input type="checkbox" value="ignore" onclick="return false;"  >
-            <input type="text" name="checkbox-{{=count}}-false" title="value if not checked" size="4" value="0" required="required">
+            <input type="text" name="{{=prefix}}-false" title="value if not checked" size="4" value="0" required="required">
             &nbsp;
             <input type="checkbox" value="ignore"   onclick="return false;"  CHECKED >
-            <input type="text" name="checkbox-{{=count}}-true" title="value if checked"  size="4" required="required">
+            <input type="text" name="{{=prefix}}-true" title="value if checked"  size="4" required="required">
         </script>
 
         <script type="text/javascript" src="rubrics.js"></script>

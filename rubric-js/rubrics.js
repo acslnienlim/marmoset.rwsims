@@ -156,12 +156,21 @@ marmoset.RubricManager = function(rubricTableId, dropdownEditor) {
     };
 };
 
+marmoset.RubricManager.prototype._prefix = function(name) {
+    prefix = "rubric-" + this.rubricCount;
+    if (name) {
+        prefix = prefix + "-" + name;
+    }
+    return prefix;
+}
+
 /** Render a rubric template and add it to the table. Returns the jQuery object
  * that results.
  */
 marmoset.RubricManager.prototype._addRubric = function(template, values) {
     this.rubricCount += 1;
     values.count = this.rubricCount;
+    values.prefix = this._prefix();
     values.editWidgets = template.render(values);
     var row = this.templates.rubric.render(values);
     return $(row).appendTo(this.table);
@@ -169,40 +178,32 @@ marmoset.RubricManager.prototype._addRubric = function(template, values) {
 
 /** Add a dropdown rubric to the table managed by this instance. */
 marmoset.RubricManager.prototype._addDropdown = function(event) {
-    var values = {
+    this._addRubric(this.templates.dropdown, {
         presentation: "DROPDOWN",
         header: "Dropdown"
-    };
-    var row = this._addRubric(this.templates.dropdown, values);
-
-    // Closure to get editor and widget variables into the event handler.
-    function makeHandler(row, count) {
-        var select = $("#dropdown-select-" + count),
-            hidden = $("#rubric-value-" + count),
-            widget = new marmoset.DropdownWidget(select, hidden),
-            editor = this.dropdownEditor;
-        return function(event) {
-            event.preventDefault();
-            editor.edit(widget);
-        };
-    }
-    $("#dropdown-edit-" + this.rubricCount).click(makeHandler(row, this.rubricCount));
+    });
+    var select = $('#' + this._prefix("select")),
+        hidden = $('#' + this._prefix("hidden")),
+        widget = new marmoset.DropdownWidget(select, hidden),
+        editor = this.dropdownEditor;
+    $("#" + this._prefix("edit-button")).click(function(event) {
+        event.preventDefault();
+        editor.edit(widget);
+    });
 };
 
 marmoset.RubricManager.prototype._addNumeric = function(event) {
-    var values = {
+    this._addRubric(this.templates.numeric, {
         presentation: "NUMERIC",
         header: "Numeric"
-    };
-    this._addRubric(this.templates.numeric, values);
+    });
 };
 
 marmoset.RubricManager.prototype._addCheckbox = function(event) {
-    var values = {
+    this._addRubric(this.templates.checkbox, {
         presentation: "CHECKBOX",
         header: "Checkbox",
-    };
-    this._addRubric(this.templates.checkbox, values);
+    });
 };
 
 /**
