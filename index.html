@@ -34,7 +34,7 @@
                         placeholder="name:value pairs (e.g., bad:0, ok:5, good:7)"
                         size="50" />
                         <select id="dropdown-select-{{=count}}"></select>
-                    <button id="dropdown-edit-{{=count}}">edit dropdown</button>
+                    <button>edit dropdown</button>
                 </td>
                 <td>
                     <input type="text" name="description-{{=count}}" size="50"
@@ -43,5 +43,9 @@
             </tr>
         </script>
         <script type="text/javascript" src="dropdown-edit.js"></script>
+        <script type="text/javascript">
+            var manager = new RubricManager("#rubric-table", "#edit-dialog");
+            manager.setAddDropdownButton("#add-dropdown-button");
+        </script>
     </body>
 </html>
