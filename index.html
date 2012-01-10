@@ -29,18 +29,19 @@
             src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js">
             </script>
 
-        <script id="dropdownRowTemplate" type="text/x-jquery-tmpl">
-            <tr id="dropdown-{{=count}}">
-                <th>Dropdown</th>
+        <script id="rubricTemplate" type="text/x-jquery-tmpl">
+            <tr id="rubric-{{=count}}">
+                <th>{{=header}}</th>
                 <td>
-                    <input type="hidden" name="presentation-{{=count}}" value="DROPDOWN" />
+                    <input type="hidden" name="presentation-{{=count}}"
+                        value="{{=presentation}}" />
                     <input type="text" name="name-{{=count}}" size="20"
                         placeholder="Name of rubric item"/>
                 </td>
                 <td>
-                    <input type="hidden" name="value-{{=count}}" />
-                    <select id="dropdown-select-{{=count}}"></select>
-                    <button>edit dropdown</button>
+                    <input type="hidden" name="value-{{=count}}"
+                    id="rubric-value-{{=count}}"/>
+                    {{=editWidgets!}}
                 </td>
                 <td>
                     <input type="text" name="description-{{=count}}" size="50"
@@ -48,6 +49,12 @@
                 </td>
             </tr>
         </script>
+
+        <script id="dropdownTemplate" type="text/x-jquery-tmpl">
+            <select id="dropdown-select-{{=count}}"></select>
+            <button id="dropdown-edit-{{=count}}">edit dropdown</button>
+        </script>
+
         <script type="text/javascript" src="dropdown-edit.js"></script>
         <script type="text/javascript">
             var dropdownEditor = new DropdownEditor("#edit-dialog");

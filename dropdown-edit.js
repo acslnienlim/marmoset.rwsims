@@ -148,31 +148,42 @@ function RubricManager(rubricTableId, dropdownEditor) {
     this.rubricCount = 0;
 
     this.templates = {
-        dropdown: $("#dropdownRowTemplate")
+        rubric: $("#rubricTemplate"),
+        dropdown: $("#dropdownTemplate")
     };
 }
 
 /** Render a rubric template and add it to the table. Returns the jQuery object
  * that results.
  */
-RubricManager.prototype._addRubric = function(template) {
+RubricManager.prototype._addRubric = function(template, values) {
     this.rubricCount += 1;
-    var row = template.render({count: this.rubricCount});
+    values.count = this.rubricCount;
+    values.editWidgets = template.render(values);
+    var row = this.templates.rubric.render(values);
     return $(row).appendTo(this.table);
 };
 
 /** Add a dropdown rubric to the table managed by this instance. */
 RubricManager.prototype._addDropdown = function(event) {
-    var row = this._addRubric(this.templates.dropdown),
-        select = $("#dropdown-select-" + this.rubricCount),
-        hidden = $('input[name="value-' + this.rubricCount + '"]', row),
-        widget = new DropdownWidget(select, hidden),
-        editor = this.dropdownEditor;
-    // Set the edit button handler.
-    $("button", row).click(function(event) {
+    var values = {
+        presentation: "DROPDOWN",
+        header: "Dropdown",
+    };
+    var row = this._addRubric(this.templates.dropdown, values);
+
+    // Closure to get editor and widget variables into the event handler.
+    function makeHandler(row, count) {
+        var select = $("#dropdown-select-" + count),
+            hidden = $("#rubric-value-" + count),
+            widget = new DropdownWidget(select, hidden),
+            editor = this.dropdownEditor;
+        return function(event) {
             event.preventDefault();
             editor.edit(widget);
-    });
+        };
+    }
+    $("#dropdown-edit-" + this.rubricCount).click(makeHandler(row, this.rubricCount));
 };
 
 /**
