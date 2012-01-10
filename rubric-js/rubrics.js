@@ -126,9 +126,7 @@ marmoset.DropdownEditor.prototype.edit = function(widget) {
 };
 
 marmoset.DropdownEditor.prototype._save = function() {
-    console.log("saving " + this.widget.getValueString());
     if (!this.currentWidget) {
-        console.error("No current widget defined.");
         return;
     }
     this.currentWidget.setValues(this.widget.valueMap);
@@ -171,7 +169,7 @@ marmoset.RubricManager.prototype._addRubric = function(template, values) {
 marmoset.RubricManager.prototype._addDropdown = function(event) {
     var values = {
         presentation: "DROPDOWN",
-        header: "Dropdown",
+        header: "Dropdown"
     };
     var row = this._addRubric(this.templates.dropdown, values);
 
