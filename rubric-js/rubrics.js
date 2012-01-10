@@ -150,7 +150,8 @@ marmoset.RubricManager = function(rubricTableId, dropdownEditor) {
 
     this.templates = {
         rubric: $("#rubricTemplate"),
-        dropdown: $("#dropdownTemplate")
+        dropdown: $("#dropdownTemplate"),
+        numeric: $("#numericTemplate")
     };
 };
 
@@ -187,6 +188,14 @@ marmoset.RubricManager.prototype._addDropdown = function(event) {
     $("#dropdown-edit-" + this.rubricCount).click(makeHandler(row, this.rubricCount));
 };
 
+marmoset.RubricManager.prototype._addNumeric = function(event) {
+    var values = {
+        presentation: "NUMERIC",
+        header: "Numeric"
+    };
+    this._addRubric(this.templates.numeric, values);
+};
+
 /**
  * Set the button to add a dropdown rubric.
  *
@@ -196,5 +205,12 @@ marmoset.RubricManager.prototype.setAddDropdownButton = function(buttonId) {
     var manager = this;
     $(buttonId).click(function(event) {
         manager._addDropdown();
+    });
+};
+
+marmoset.RubricManager.prototype.setAddNumericButton = function(buttonId) {
+    var manager = this;
+    $(buttonId).click(function(event) {
+        manager._addNumeric();
     });
 };

@@ -5,6 +5,7 @@
     </head>
     <body>
         <button id="add-dropdown-button">add dropdown</button>
+        <button id="add-numeric-button">add numeric</button>
         <form>
             <table id="rubric-table" />
         </form>
@@ -39,8 +40,6 @@
                         placeholder="Name of rubric item"/>
                 </td>
                 <td>
-                    <input type="hidden" name="value-{{=count}}"
-                    id="rubric-value-{{=count}}"/>
                     {{=editWidgets!}}
                 </td>
                 <td>
@@ -51,8 +50,21 @@
         </script>
 
         <script id="dropdownTemplate" type="text/x-jquery-tmpl">
+                    <input type="hidden" name="value-{{=count}}" id="rubric-value-{{=count}}"/>
             <select id="dropdown-select-{{=count}}"></select>
             <button id="dropdown-edit-{{=count}}">edit dropdown</button>
+        </script>
+
+
+        <script id="numericTemplate" type="text/x-jquery-tmpl">
+            <label for="numeric-{{=count}}-min-input">min:</label>
+            <input type="text" name="rubric-{{=count}}-min" id="numeric-{{=count}}-min-input" placeholder="min"  size="4">
+
+            <label for="numeric-{{=count}}-max-input">max:</label>
+            <input type="text" name="rubric-{{=count}}-max" id="numeric-{{=count}}-max-input" placeholder="max"  size="4">
+
+            <label for="numeric-{{=count}}-default-input">default:</label>
+            <input type="text" name="rubric-{{=count}}-default" id="numeric-{{=count}}-default-input" placeholder="default"  size="4">
         </script>
 
         <script type="text/javascript" src="rubrics.js"></script>
@@ -60,6 +72,7 @@
             var dropdownEditor = new marmoset.DropdownEditor("#edit-dialog");
             var manager = new marmoset.RubricManager("#rubric-table", dropdownEditor);
             manager.setAddDropdownButton("#add-dropdown-button");
+            manager.setAddNumericButton("#add-numeric-button");
         </script>
     </body>
 </html>
