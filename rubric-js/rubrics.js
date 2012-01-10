@@ -151,7 +151,8 @@ marmoset.RubricManager = function(rubricTableId, dropdownEditor) {
     this.templates = {
         rubric: $("#rubricTemplate"),
         dropdown: $("#dropdownTemplate"),
-        numeric: $("#numericTemplate")
+        numeric: $("#numericTemplate"),
+        checkbox: $("#checkboxTemplate")
     };
 };
 
@@ -196,6 +197,14 @@ marmoset.RubricManager.prototype._addNumeric = function(event) {
     this._addRubric(this.templates.numeric, values);
 };
 
+marmoset.RubricManager.prototype._addCheckbox = function(event) {
+    var values = {
+        presentation: "CHECKBOX",
+        header: "Checkbox",
+    };
+    this._addRubric(this.templates.checkbox, values);
+};
+
 /**
  * Set the button to add a dropdown rubric.
  *
@@ -212,5 +221,12 @@ marmoset.RubricManager.prototype.setAddNumericButton = function(buttonId) {
     var manager = this;
     $(buttonId).click(function(event) {
         manager._addNumeric();
+    });
+};
+
+marmoset.RubricManager.prototype.setAddCheckboxButton = function(buttonId) {
+    var manager = this;
+    $(buttonId).click(function(event) {
+        manager._addCheckbox();
     });
 };
