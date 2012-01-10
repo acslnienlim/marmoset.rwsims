@@ -30,6 +30,7 @@ marmoset.DropdownWidget.prototype.redraw = function() {
     for (var k in this.valueMap) {
         var option = document.createElement('option');
         option.innerHTML = k + " [" + this.valueMap[k] + "]";
+        option.value = k;
         frag.appendChild(option);
     }
     this.$select.append(frag);
@@ -41,6 +42,7 @@ marmoset.DropdownWidget.prototype.redraw = function() {
 marmoset.DropdownWidget.prototype.put = function(name, score) {
     this.valueMap[name] = score;
     this.redraw();
+    this.$select.val(name);
 };
 
 marmoset.DropdownWidget.prototype.setValues = function(valueMap) {
@@ -92,14 +94,16 @@ marmoset.DropdownEditor = function(dialogId) {
     this.widget = new marmoset.DropdownWidget(this.select);
     this.valueInput = this.dialog.find(dialogId + "-value-input");
     this.scoreInput = this.dialog.find(dialogId + "-score-input");
+    this.scoreInput.keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            editor._add();
+        }
+    });
 
     this.dialog.find(dialogId + "-controls").buttonset();
     this.dialog.find(dialogId + "-add").click(function(event) {
-        var value = editor.valueInput.val(),
-            score = editor.scoreInput.val();
-        if (value && score) {
-            editor.widget.put(value, score);
-        }
+        editor._add();
     });
     this.dialog.find(dialogId + "-delete").click(function(event) {
         var value = editor.valueInput.val();
@@ -109,7 +113,19 @@ marmoset.DropdownEditor = function(dialogId) {
     });
     this.dialog.find(dialogId + "-clear-all").click(function(event) {
         editor.widget.clear();
+        editor.valueInput.val('');
+        editor.scoreInput.val('');
+        editor.valueInput.select();
     });
+}
+
+marmoset.DropdownEditor.prototype._add = function() {
+    var value = this.valueInput.val(),
+        score = this.scoreInput.val();
+    if (value && score) {
+        this.widget.put(value, score);
+    }
+    this.valueInput.select();
 }
 
 marmoset.DropdownEditor.prototype.clearAndClose = function() {
