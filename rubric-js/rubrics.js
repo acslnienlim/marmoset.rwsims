@@ -1,3 +1,6 @@
+var marmoset = marmoset || {};
+
+
 /**
  * @class Wraps a <select /> tag for displaying a dropdown rubric.
  *
@@ -7,13 +10,13 @@
  * @param {object} the select tag to wrap.
  * @param {object} [hidden] the hidden input for storing the value string.
  */
-function DropdownWidget(select, hidden) {
+marmoset.DropdownWidget = function(select, hidden) {
     this.$select = $(select);
     this.$hidden = $(hidden);
     this.valueMap = {};
-}
+};
 
-DropdownWidget.prototype.getValueString = function() {
+marmoset.DropdownWidget.prototype.getValueString = function() {
     var pairs = [];
     $.each(this.valueMap, function(value, score) {
         pairs.push(value + ":" + score);
@@ -21,7 +24,7 @@ DropdownWidget.prototype.getValueString = function() {
     return pairs.join(",");
 };
 
-DropdownWidget.prototype.redraw = function() {
+marmoset.DropdownWidget.prototype.redraw = function() {
     this.$select.empty();
     var frag = document.createDocumentFragment();
     for (var k in this.valueMap) {
@@ -35,12 +38,12 @@ DropdownWidget.prototype.redraw = function() {
     }
 };
 
-DropdownWidget.prototype.put = function(name, score) {
+marmoset.DropdownWidget.prototype.put = function(name, score) {
     this.valueMap[name] = score;
     this.redraw();
 };
 
-DropdownWidget.prototype.setValues = function(valueMap) {
+marmoset.DropdownWidget.prototype.setValues = function(valueMap) {
     this.clear();
     var thisValueMap = this.valueMap;
     $.each(valueMap, function(value, score) {
@@ -49,12 +52,12 @@ DropdownWidget.prototype.setValues = function(valueMap) {
     this.redraw();
 };
 
-DropdownWidget.prototype.remove = function(name) {
+marmoset.DropdownWidget.prototype.remove = function(name) {
     delete this.valueMap[name];
     this.redraw();
 };
 
-DropdownWidget.prototype.clear = function() {
+marmoset.DropdownWidget.prototype.clear = function() {
     this.valueMap = {};
     this.redraw();
 };
@@ -68,7 +71,7 @@ DropdownWidget.prototype.clear = function() {
  * @constructor
  * @param {string} dialogId the id of the div with the dialog markup.
  */
-function DropdownEditor(dialogId) {
+marmoset.DropdownEditor = function(dialogId) {
     var editor = this;
     this.dialog = $(dialogId).dialog({
         autoOpen: false,
@@ -86,7 +89,7 @@ function DropdownEditor(dialogId) {
         }
     });
     this.select = this.dialog.find(dialogId + "-dropdown-select");
-    this.widget = new DropdownWidget(this.select);
+    this.widget = new marmoset.DropdownWidget(this.select);
     this.valueInput = this.dialog.find(dialogId + "-value-input");
     this.scoreInput = this.dialog.find(dialogId + "-score-input");
 
@@ -109,20 +112,20 @@ function DropdownEditor(dialogId) {
     });
 }
 
-DropdownEditor.prototype.clearAndClose = function() {
+marmoset.DropdownEditor.prototype.clearAndClose = function() {
     this.dialog.dialog("close");
     this.widget.clear();
     this.valueInput.val('');
     this.scoreInput.val('');
 };
 
-DropdownEditor.prototype.edit = function(widget) {
+marmoset.DropdownEditor.prototype.edit = function(widget) {
     this.dialog.dialog("open");
     this.currentWidget = widget;
     this.widget.setValues(widget.valueMap);
 };
 
-DropdownEditor.prototype._save = function() {
+marmoset.DropdownEditor.prototype._save = function() {
     console.log("saving " + this.widget.getValueString());
     if (!this.currentWidget) {
         console.error("No current widget defined.");
@@ -142,7 +145,7 @@ DropdownEditor.prototype._save = function() {
  * @param {string} rubricTableId the id of the rubric table.
  * @param {DropdownEditor} dropdownEditor dropdown editor instance.
  */
-function RubricManager(rubricTableId, dropdownEditor) {
+marmoset.RubricManager = function(rubricTableId, dropdownEditor) {
     this.table = $(rubricTableId);
     this.dropdownEditor = dropdownEditor;
     this.rubricCount = 0;
@@ -151,12 +154,12 @@ function RubricManager(rubricTableId, dropdownEditor) {
         rubric: $("#rubricTemplate"),
         dropdown: $("#dropdownTemplate")
     };
-}
+};
 
 /** Render a rubric template and add it to the table. Returns the jQuery object
  * that results.
  */
-RubricManager.prototype._addRubric = function(template, values) {
+marmoset.RubricManager.prototype._addRubric = function(template, values) {
     this.rubricCount += 1;
     values.count = this.rubricCount;
     values.editWidgets = template.render(values);
@@ -165,7 +168,7 @@ RubricManager.prototype._addRubric = function(template, values) {
 };
 
 /** Add a dropdown rubric to the table managed by this instance. */
-RubricManager.prototype._addDropdown = function(event) {
+marmoset.RubricManager.prototype._addDropdown = function(event) {
     var values = {
         presentation: "DROPDOWN",
         header: "Dropdown",
@@ -176,7 +179,7 @@ RubricManager.prototype._addDropdown = function(event) {
     function makeHandler(row, count) {
         var select = $("#dropdown-select-" + count),
             hidden = $("#rubric-value-" + count),
-            widget = new DropdownWidget(select, hidden),
+            widget = new marmoset.DropdownWidget(select, hidden),
             editor = this.dropdownEditor;
         return function(event) {
             event.preventDefault();
@@ -191,7 +194,7 @@ RubricManager.prototype._addDropdown = function(event) {
  *
  * @param {string} id of the button to use.
  */
-RubricManager.prototype.setAddDropdownButton = function(buttonId) {
+marmoset.RubricManager.prototype.setAddDropdownButton = function(buttonId) {
     var manager = this;
     $(buttonId).click(function(event) {
         manager._addDropdown();
