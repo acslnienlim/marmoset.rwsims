@@ -14,6 +14,17 @@ marmoset.DropdownWidget = function(select, hidden) {
     this.$select = $(select);
     this.$hidden = $(hidden);
     this.valueMap = {};
+
+    var thisWidget = this;
+    this.$select.change(function(event) {
+        var value = thisWidget.$select.val(),
+            score = thisWidget.valueMap[value];
+        $(thisWidget).trigger({
+            type: 'change',
+            value: value,
+            score: score
+        });
+    });
 };
 
 /** 
@@ -120,6 +131,7 @@ marmoset.DropdownEditor = function(dialogId) {
     });
     this.select = this.dialog.find(dialogId + "-dropdown-select");
     this.widget = new marmoset.DropdownWidget(this.select);
+
     this.valueInput = this.dialog.find(dialogId + "-value-input");
     this.scoreInput = this.dialog.find(dialogId + "-score-input");
     this.scoreInput.keypress(function(event) {
@@ -127,6 +139,12 @@ marmoset.DropdownEditor = function(dialogId) {
             event.preventDefault();
             editor._add();
         }
+    });
+
+    $(this.widget).change(function(event) {
+        editor.valueInput.val(event.value);
+        editor.scoreInput.val(event.score);
+        editor.scoreInput.select();
     });
 
     this.dialog.find(dialogId + "-controls").buttonset();
@@ -138,6 +156,9 @@ marmoset.DropdownEditor = function(dialogId) {
         if (value) {
             editor.widget.remove(value);
         }
+        editor.valueInput.val('');
+        editor.scoreInput.val('');
+        editor.valueInput.select();
     });
     this.dialog.find(dialogId + "-clear-all").click(function(event) {
         editor.widget.clear();
