@@ -23,29 +23,32 @@ marmoset.DropdownWidget = function(select, hidden) {
  * pairs are separated by ','.
  */
 marmoset.DropdownWidget.prototype.getValueString = function() {
-    var pairs = [];
-    $.each(this.valueMap, function(value, score) {
-        pairs.push(value + ":" + score);
-    });
-    return pairs.join(",");
+    return $.map(this.valueMap, function(score, value) {
+        return value + ":" + score;
+    }).join(",");
 };
+
+$.template("optionTemplate",
+           '<option value="{{=value}}">{{=value}} [{{=score}}]</option>');
 
 /**
  * Redraw the select tag, provinding an option tag for each key/value pair.
  */
 marmoset.DropdownWidget.prototype.redraw = function() {
     this.$select.empty();
-    var frag = document.createDocumentFragment();
-    for (var k in this.valueMap) {
-        var option = document.createElement('option');
-        option.innerHTML = k + " [" + this.valueMap[k] + "]";
-        option.value = k;
-        frag.appendChild(option);
-    }
-    this.$select.append(frag);
     if (this.$hidden) {
         this.$hidden.val(this.getValueString());
     }
+    if (!this.valueMap) {
+        return;
+    }
+    var opts = $.map(this.valueMap, function(score, value) {
+        return $.render({
+            value: value,
+            score: score
+        }, 'optionTemplate');
+    });
+    this.$select.append(opts.join(''));
 };
 
 /**
